@@ -1,0 +1,39 @@
+name: Update Azure Service Tags
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  update-service-tags:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZ_CREDS }}
+
+      - name: Get Azure Locations and Fetch Service Tags
+        run: |
+          locations=$(az account list-locations --query "[].name" -o tsv)
+          for location in $locations; do
+            echo "Fetching service tags for $location"
+            az network list-service-tags --location $location --output json > st_$location.json
+          done
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add st_*.json
+          git commit -m "Update Azure Service Tags"
+          git push
