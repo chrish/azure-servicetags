@@ -32,7 +32,7 @@ jobs:
             echo "Fetching service tags for $location"
             az rest --method get \
               --url "https://management.azure.com/subscriptions/$AZ_SUB/providers/Microsoft.Network/locations/$location/serviceTags?api-version=2022-11-01" \
-              --output json > st_$location.json
+              --output json > st_$location.json || echo "Failed to fetch for $location, skipping."
           done
 
       - name: Commit and Push Changes
