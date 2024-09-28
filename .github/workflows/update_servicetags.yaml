@@ -23,6 +23,8 @@ jobs:
           creds: ${{ secrets.AZ_CREDS }}
 
       - name: Get Azure Locations and Fetch Service Tags
+        env:
+          AZ_SUB: ${{ secrets.AZ_SUB }}
         run: |
           locations=$(az account list-locations --query "[].name" -o tsv)
           for location in $locations; do
