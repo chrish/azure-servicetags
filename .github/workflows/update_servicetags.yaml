@@ -27,7 +27,9 @@ jobs:
           locations=$(az account list-locations --query "[].name" -o tsv)
           for location in $locations; do
             echo "Fetching service tags for $location"
-            az network list-service-tags --location $location --output json > st_$location.json
+            az rest --method get \
+              --url "https://management.azure.com/subscriptions/$AZ_SUB/providers/Microsoft.Network/locations/$location/serviceTags?api-version=2022-11-01" \
+              --output json > st_$location.json
           done
 
       - name: Commit and Push Changes
