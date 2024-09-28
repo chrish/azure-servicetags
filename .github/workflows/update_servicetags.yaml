@@ -26,7 +26,8 @@ jobs:
         env:
           AZ_SUB: ${{ secrets.AZ_SUB }}
         run: |
-          locations=$(az account list-locations --query "[].name" -o tsv)
+          locations=$( az account list-locations --query "[?not_null(metadata.latitude)] .{RegionName:name , RegionDisplayName:regionalDisplayName} " --output tsv)
+          
           for location in $locations; do
             echo "Fetching service tags for $location"
             az rest --method get \
