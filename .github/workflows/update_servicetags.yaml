@@ -42,6 +42,10 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add st_*.json
-          git commit -m "Update Azure Service Tags"
-          git push
+          git add spreadsheet_data.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Fetched data from Google Sheets"
+            git push
+          else
+            echo "No changes to commit"
+          fi
