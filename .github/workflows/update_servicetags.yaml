@@ -42,7 +42,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add spreadsheet_data.json
+          git add st_*.json
           if ! git diff --cached --quiet; then
             git commit -m "Fetched data from Google Sheets"
             git push
